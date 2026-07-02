@@ -15,10 +15,20 @@ export class ResponseTransformInterceptor<T> implements NestInterceptor {
     return next.handle().pipe(
       map((data: T) => ({
         statusCode: response.statusCode ?? 200,
-        data,
+        response: this.transformData(data),
         timestamp: new Date().toISOString(),
         requestId,
       })),
     );
+  }
+
+  private transformData(data: any) {
+    if (typeof data === 'object' && Array.isArray(data)) {
+      return {
+        data,
+        total: data.length,
+      };
+    }
+    return data;
   }
 }

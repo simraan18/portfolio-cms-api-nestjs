@@ -6,6 +6,9 @@ import { PrismaModule } from './lib/database/prisma.module.js';
 import { UserTokenModule } from './user-token/user-token.module.js';
 import { ApiTokenModule } from './lib/api-token/api-token.module.js';
 import { LoggerModule } from './lib/logger/logger.module.js';
+import { CardCategoryModule } from './card-category/card-category.module.js';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from './global-exception-filter.js';
 
 @Module({
   imports: [
@@ -15,6 +18,13 @@ import { LoggerModule } from './lib/logger/logger.module.js';
     UserTokenModule,
     ApiTokenModule,
     LoggerModule,
+    CardCategoryModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
   ],
 })
 export class AppModule implements NestModule {

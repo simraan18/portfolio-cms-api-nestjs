@@ -32,3 +32,21 @@ model UserToken {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Card {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String
+  description    String
+  slug           String
+  cardCategoryId String       @db.Uuid
+  cardCategory   CardCategory @relation(fields: [cardCategoryId], references: [id])
+}
+
+model CardCategory {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  description String
+  slug        String
+
+  cards Card[]
+}
