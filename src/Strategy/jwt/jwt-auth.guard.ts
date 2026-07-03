@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../../decorator/is-public.js';
+import { LoggerService } from '../../lib/logger/logger.service.js';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -18,6 +19,7 @@ export class JwtAuthGuard implements CanActivate {
     private readonly userTokenService: UserTokenService,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
+    private readonly logger: LoggerService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -43,6 +45,7 @@ export class JwtAuthGuard implements CanActivate {
       };
       return true;
     } catch (error) {
+      this.logger.error((error as any)?.message);
       throw new UnauthorizedException();
     }
   }

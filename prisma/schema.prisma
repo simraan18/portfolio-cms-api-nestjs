@@ -50,3 +50,29 @@ model CardCategory {
 
   cards Card[]
 }
+
+model Experience {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role      String
+  company   String
+  country   String
+  startDate DateTime
+  endDate   DateTime?
+
+  responsibilities Responsibility[]
+  technologies     Technology[]
+}
+
+model Responsibility {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content      String
+  experience   Experience? @relation(fields: [experienceId], references: [id])
+  experienceId String      @db.Uuid
+}
+
+model Technology {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  experience   Experience? @relation(fields: [experienceId], references: [id])
+  experienceId String      @db.Uuid
+}
