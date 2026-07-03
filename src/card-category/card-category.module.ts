@@ -5,5 +5,6 @@ import { CardCategoryController } from './card-category.controller.js';
 @Module({
   providers: [CardCategoryService],
   controllers: [CardCategoryController],
+  exports: [CardCategoryService],
 })
 export class CardCategoryModule {}

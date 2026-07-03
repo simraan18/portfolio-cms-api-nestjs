@@ -1,17 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { AppModule } from '../src/app.module.js';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import express from 'express';
 
-import { ResponseTransformInterceptor } from './interceptor/response-transform/response-transform.interceptor.js';
+const server = express();
 
-import 'dotenv/config';
-
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('/api/v1');
+export default async function handler(req, res) {
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   app.enableCors();
+
+  app.setGlobalPrefix('/api/v1');
+
+  const { SwaggerModule, DocumentBuilder } = await import('@nestjs/swagger');
 
   const config = new DocumentBuilder()
     .setTitle('Portfolio CMS API')
@@ -32,9 +33,7 @@ async function bootstrap() {
 
   SwaggerModule.setup('api-docs', app, document, { useGlobalPrefix: true });
 
-  app.useGlobalInterceptors(new ResponseTransformInterceptor());
-  app.useGlobalPipes(new ValidationPipe());
+  await app.init();
 
-  await app.listen(process.env.PORT ?? 4000);
+  server(req, res);
 }
-bootstrap();

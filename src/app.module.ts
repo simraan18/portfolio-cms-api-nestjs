@@ -12,6 +12,9 @@ import { GlobalExceptionFilter } from './global-exception-filter.js';
 import { ExperienceModule } from './experience/experience.module.js';
 import { ResponsibilityModule } from './responsibility/responsibility.module.js';
 import { TechnologyModule } from './technology/technology.module.js';
+import { SocialLinkModule } from './social-link/social-link.module.js';
+import { ProfileModule } from './profile/profile.module.js';
+import { CardModule } from './card/card.module.js';
 
 @Module({
   imports: [
@@ -25,6 +28,9 @@ import { TechnologyModule } from './technology/technology.module.js';
     ExperienceModule,
     ResponsibilityModule,
     TechnologyModule,
+    SocialLinkModule,
+    ProfileModule,
+    CardModule,
   ],
   providers: [
     {

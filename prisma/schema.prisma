@@ -76,3 +76,24 @@ model Technology {
   experience   Experience? @relation(fields: [experienceId], references: [id])
   experienceId String      @db.Uuid
 }
+
+model SocialLink {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title    String
+  label    String
+  url      String
+  platform String
+}
+
+model Profile {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  email        String
+  location     String
+  experience   Int
+  education    String
+  visaStatus   String?
+  aboutProfile String
+  topSkills    String[]
+  roles        String[]
+}
