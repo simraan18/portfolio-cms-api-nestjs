@@ -49,7 +49,12 @@ export class AuthService {
     });
     const { key, hashedToken } =
       await this.apiTokenService.generateToken(token);
-    await this.userTokenService.deleteToken(user.id);
+    const exitsUserToken = await this.userTokenService.getUserTokenByUserId(
+      user.id,
+    );
+    if (exitsUserToken) {
+      await this.userTokenService.deleteToken(user.id);
+    }
     await this.userTokenService.createUserToken(user.id, hashedToken);
     return { access_token: `${user.id}.${key}` };
   }

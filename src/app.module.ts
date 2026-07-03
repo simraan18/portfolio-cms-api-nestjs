@@ -9,6 +9,9 @@ import { LoggerModule } from './lib/logger/logger.module.js';
 import { CardCategoryModule } from './card-category/card-category.module.js';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './global-exception-filter.js';
+import { ExperienceModule } from './experience/experience.module.js';
+import { ResponsibilityModule } from './responsibility/responsibility.module.js';
+import { TechnologyModule } from './technology/technology.module.js';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { GlobalExceptionFilter } from './global-exception-filter.js';
     ApiTokenModule,
     LoggerModule,
     CardCategoryModule,
+    ExperienceModule,
+    ResponsibilityModule,
+    TechnologyModule,
   ],
   providers: [
     {
