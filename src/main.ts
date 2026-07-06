@@ -17,7 +17,6 @@ async function bootstrap() {
     .setTitle('Portfolio CMS API')
     .setDescription('SK Portfolio Content Managment System API')
     .setVersion('1.0')
-    .addServer('/api/v1')
     .addBearerAuth(
       {
         type: 'http',
