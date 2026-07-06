@@ -46,4 +46,12 @@ export class ProfileDto {
   @IsString({ each: true })
   @ApiProperty({ example: 'Frontend, Backend' })
   roles!: string[];
+
+  @IsString()
+  @ApiProperty({ example: 'Resume' })
+  resumeUrl!: string;
+
+  @IsString()
+  @ApiProperty({ example: 'Title' })
+  title!: string;
 }

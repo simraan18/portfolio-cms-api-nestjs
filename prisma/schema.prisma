@@ -96,4 +96,6 @@ model Profile {
   aboutProfile String
   topSkills    String[]
   roles        String[]
+  resumeUrl    String?
+  title        String?
 }
