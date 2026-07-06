@@ -24,6 +24,7 @@ export class ExperienceService {
         country: payload.country,
         startDate: payload.startDate,
         endDate: payload.endDate,
+        isCurrent: payload.isCurrent,
       },
     });
   }
