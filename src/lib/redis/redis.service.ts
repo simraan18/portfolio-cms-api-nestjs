@@ -28,5 +28,6 @@ export class RedisService {
 
   async del(key: string) {
     await this.redis.del(key);
+    this.logger.log('Redis del', { key });
   }
 }
