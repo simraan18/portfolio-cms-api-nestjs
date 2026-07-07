@@ -16,6 +16,7 @@ import { SocialLinkModule } from './social-link/social-link.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { CardModule } from './card/card.module.js';
 import { RedisModule } from './lib/redis/redis.module.js';
+import { WebSocketModule } from './websocket/websocket.module.js';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RedisModule } from './lib/redis/redis.module.js';
     ProfileModule,
     CardModule,
     RedisModule,
+    WebSocketModule,
   ],
   providers: [
     {
