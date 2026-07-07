@@ -87,16 +87,18 @@ model SocialLink {
 }
 
 model Profile {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  email        String
-  location     String
-  experience   Int
-  education    String
-  visaStatus   String?
-  aboutProfile String
-  topSkills    String[]
-  roles        String[]
-  resumeUrl    String?
-  title        String?
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  email             String
+  location          String
+  experience        Int
+  education         String
+  visaStatus        String?
+  aboutProfile      String
+  topSkills         String[]
+  roles             String[]
+  resumeUrl         String?
+  title             String?
+  educationCountry  String?
+  educationInstitue String?
 }

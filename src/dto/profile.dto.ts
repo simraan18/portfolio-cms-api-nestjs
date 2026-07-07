@@ -54,4 +54,12 @@ export class ProfileDto {
   @IsString()
   @ApiProperty({ example: 'Title' })
   title!: string;
+
+  @IsString()
+  @ApiProperty({ example: 'New York' })
+  educationCountry!: string;
+
+  @IsString()
+  @ApiProperty({ example: 'Oxford' })
+  educationInstitue!: string;
 }
