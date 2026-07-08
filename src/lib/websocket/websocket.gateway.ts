@@ -1,13 +1,18 @@
 import {
-  ConnectedSocket,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { LoggerService } from '../lib/logger/logger.service.js';
+import { LoggerService } from '../logger/logger.service.js';
+import { WebSocket } from 'ws';
+
+declare module 'ws' {
+  interface WebSocket {
+    isAlive: boolean;
+  }
+}
 
 @WebSocketGateway({
   path: '/ws',
@@ -15,9 +20,23 @@ import { LoggerService } from '../lib/logger/logger.service.js';
 export class WebsocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(protected readonly logger: LoggerService) {}
-
   private clients = new Set<WebSocket>();
+  private interval: NodeJS.Timeout | null = null;
+
+  constructor(protected readonly logger: LoggerService) {
+    this.interval = setInterval(() => {
+      for (const client of this.clients) {
+        if (!client.isAlive) {
+          client.terminate();
+          this.clients.delete(client);
+          this.logger.log('WebSocket client terminated');
+          continue;
+        }
+        client.isAlive = false;
+        client.ping();
+      }
+    }, 30000);
+  }
 
   afterInit(server: any) {
     this.logger.log('WebSocket initialized', { server });
@@ -25,24 +44,17 @@ export class WebsocketGateway
 
   handleConnection(client: WebSocket, ...args: any[]) {
     this.logger.log('WebSocket connected');
+    client.isAlive = true;
+    client.on('pong', () => {
+      this.logger.log('WebSocket pong');
+      client.isAlive = true;
+    });
     this.clients.add(client);
   }
 
   handleDisconnect(client: WebSocket) {
     this.logger.log('WebSocket disconnected');
-    this.clients.delete(client);
     this.handleBroadcastFrontendVisit();
-  }
-
-  @SubscribeMessage('ping')
-  handlePing(@MessageBody() body: any, @ConnectedSocket() client: WebSocket) {
-    this.logger.log('WebSocket ping', { body });
-    client.send(
-      JSON.stringify({
-        event: 'pong',
-        data: 'pong',
-      }),
-    );
   }
 
   @SubscribeMessage('broadcast-frontend-visit')
