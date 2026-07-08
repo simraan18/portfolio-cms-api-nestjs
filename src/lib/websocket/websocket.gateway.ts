@@ -55,7 +55,8 @@ export class WebsocketGateway
     const decision = await this.arcjetWsService.protect(arcjectNodeRequest);
     if (decision.isDenied()) {
       this.logger.error('ArcjetWSService Denied', { reason: decision.reason });
-      client.close(1008, decision.reason.type || 'Connection rejected');
+      const code = decision.reason.isRateLimit() ? 1013 : 1008;
+      client.close(code, decision.reason.type || 'Connection rejected');
       return;
     }
     this.logger.log('WebSocket connected');
