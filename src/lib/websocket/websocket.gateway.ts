@@ -7,6 +7,9 @@ import {
 } from '@nestjs/websockets';
 import { LoggerService } from '../logger/logger.service.js';
 import { WebSocket } from 'ws';
+import { ArcjetWSService } from '../arcjet/arcjet-ws.service.js';
+import { IncomingMessage } from 'http';
+import { ArcjetNodeRequest } from '@arcjet/node';
 
 declare module 'ws' {
   interface WebSocket {
@@ -23,7 +26,10 @@ export class WebsocketGateway
   private clients = new Set<WebSocket>();
   private interval: NodeJS.Timeout | null = null;
 
-  constructor(protected readonly logger: LoggerService) {
+  constructor(
+    protected readonly logger: LoggerService,
+    private readonly arcjetWsService: ArcjetWSService,
+  ) {
     this.interval = setInterval(() => {
       for (const client of this.clients) {
         if (!client.isAlive) {
@@ -42,11 +48,20 @@ export class WebsocketGateway
     this.logger.log('WebSocket initialized', { server });
   }
 
-  handleConnection(client: WebSocket, ...args: any[]) {
+  async handleConnection(client: WebSocket, request: IncomingMessage) {
+    const arcjectNodeRequest: ArcjetNodeRequest = {
+      ...request,
+    };
+    const decision = await this.arcjetWsService.protect(arcjectNodeRequest);
+    if (decision.isDenied()) {
+      this.logger.error('ArcjetWSService Denied', { reason: decision.reason });
+      client.close(1008, decision.reason.type || 'Connection rejected');
+      return;
+    }
     this.logger.log('WebSocket connected');
     client.isAlive = true;
     client.on('pong', () => {
-      this.logger.log('WebSocket pong');
+      this.logger.log('Client pong');
       client.isAlive = true;
     });
     this.clients.add(client);
