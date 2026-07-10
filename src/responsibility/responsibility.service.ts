@@ -20,4 +20,14 @@ export class ResponsibilityService {
       },
     });
   }
+
+  async updateResponsibility(payload: ResponsibilityDto, id: string) {
+    await this.redisService.del(EXPERIENCE_ALL_REDIS_KEY);
+    return await this.prisma.responsibility.update({
+      where: { id },
+      data: {
+        content: payload.content,
+      },
+    });
+  }
 }

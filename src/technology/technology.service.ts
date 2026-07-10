@@ -20,4 +20,14 @@ export class TechnologyService {
       },
     });
   }
+
+  async updateTechnology(payload: TechnologyDto, id: string) {
+    await this.redisService.del(EXPERIENCE_ALL_REDIS_KEY);
+    return await this.prisma.technology.update({
+      where: { id },
+      data: {
+        name: payload.name,
+      },
+    });
+  }
 }

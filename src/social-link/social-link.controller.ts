@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { SocialLinkService } from './social-link.service.js';
 import { JwtAuthGuard } from '../Strategy/jwt/jwt-auth.guard.js';
 import { SocialLinkDto } from '../dto/social-link.dto.js';
@@ -21,5 +29,16 @@ export class SocialLinkController {
   @ApiOperation({ summary: 'Gell All Social Link' })
   async getAllSocialLinks() {
     return await this.socialLinkService.getAllSocialLinks();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  @ApiOperation({ summary: 'Update Social Link' })
+  @ApiBearerAuth('access-token')
+  async updateSocialLink(
+    @Param('id') id: string,
+    @Body() payload: SocialLinkDto,
+  ) {
+    return await this.socialLinkService.updateSocialLink(payload, id);
   }
 }

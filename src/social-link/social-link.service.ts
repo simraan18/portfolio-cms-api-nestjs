@@ -35,4 +35,12 @@ export class SocialLinkService {
     );
     return data;
   }
+
+  async updateSocialLink(payload: SocialLinkDto, id: string) {
+    await this.redisService.del(SOCIAL_LINKS_ALL_REDIS_KEY);
+    return await this.prisma.socialLink.update({
+      where: { id },
+      data: payload,
+    });
+  }
 }

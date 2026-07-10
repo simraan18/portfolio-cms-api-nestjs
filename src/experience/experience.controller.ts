@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ExperienceDto } from '../dto/experience.dto.js';
 import { ExperienceService } from './experience.service.js';
 import { JwtAuthGuard } from '../Strategy/jwt/jwt-auth.guard.js';
@@ -21,5 +29,16 @@ export class ExperienceController {
   @ApiOperation({ summary: 'Get all experience' })
   async getAllExperiences() {
     return await this.experienceService.getAllExperiences();
+  }
+
+  @Put('/:id')
+  @ApiOperation({ summary: 'Update experience' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async updateExperience(
+    @Body() payload: ExperienceDto,
+    @Param('id') id: string,
+  ) {
+    return await this.experienceService.updateExperience(id, payload);
   }
 }

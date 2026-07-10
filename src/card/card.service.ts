@@ -53,4 +53,21 @@ export class CardService {
     );
     return data;
   }
+
+  async updateCard(payload: CardDto, id: string) {
+    const cardCategory = await this.cardCategoryService.getCardCategoryById(
+      payload.cardCategoryId,
+    );
+    await this.redisService.del(CARD_GET_BY_SLUG(cardCategory.slug));
+    return await this.prisma.card.update({
+      where: { id },
+      data: {
+        cardCategoryId: cardCategory.id,
+        description: payload.description,
+        slug: cardCategory.slug,
+        title: payload.title,
+      },
+      include: { cardCategory: true },
+    });
+  }
 }

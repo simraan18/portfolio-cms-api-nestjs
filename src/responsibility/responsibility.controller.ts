@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ResponsibilityService } from './responsibility.service.js';
 import { ResponsibilityDto } from '../dto/responsibility.dto.js';
 import { JwtAuthGuard } from '../Strategy/jwt/jwt-auth.guard.js';
@@ -21,5 +21,14 @@ export class ResponsibilityController {
       payload,
       experienceId,
     );
+  }
+
+  @Put('/:id')
+  @ApiOperation({ summary: 'Update responsibility' })
+  async updateResponsibility(
+    @Body() payload: ResponsibilityDto,
+    @Param('id') id: string,
+  ) {
+    return await this.responsibilityService.updateResponsibility(payload, id);
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service.js';
 import { ProfileDto } from '../dto/profile.dto.js';
 import { JwtAuthGuard } from '../Strategy/jwt/jwt-auth.guard.js';
@@ -21,5 +29,13 @@ export class ProfileController {
   @ApiOperation({ summary: 'Get profile' })
   async getProfile() {
     return await this.profileService.getProfile();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  @ApiOperation({ summary: 'Update profile' })
+  @ApiBearerAuth('access-token')
+  async updateProfile(@Body() payload: ProfileDto, @Param('id') id: string) {
+    return await this.profileService.updateProfile(payload, id);
   }
 }

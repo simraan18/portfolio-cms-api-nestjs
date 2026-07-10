@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CardDto } from '../dto/card.dto.js';
 import { CardService } from './card.service.js';
@@ -21,5 +29,13 @@ export class CardController {
   @ApiOperation({ summary: 'Get Cards By Slug' })
   async getCardsBySlug(@Param('slug') slug: string) {
     return await this.cardService.getCardsBySlug(slug);
+  }
+
+  @Put('/:id')
+  @ApiOperation({ summary: 'Update Card' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async updateCard(@Body() payload: CardDto, @Param('id') id: string) {
+    return await this.cardService.updateCard(payload, id);
   }
 }

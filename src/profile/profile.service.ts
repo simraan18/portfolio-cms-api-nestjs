@@ -30,4 +30,14 @@ export class ProfileService {
     await this.redisService.set(PROFILE_REDIS_KEY, data, REDIS_DEFAULT_TTL);
     return data;
   }
+
+  async updateProfile(payload: ProfileDto, id: string) {
+    await this.redisService.del(PROFILE_REDIS_KEY);
+    return await this.prisma.profile.update({
+      where: { id },
+      data: {
+        ...payload,
+      },
+    });
+  }
 }

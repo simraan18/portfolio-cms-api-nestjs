@@ -50,4 +50,19 @@ export class ExperienceService {
     );
     return data;
   }
+
+  async updateExperience(id: string, payload: ExperienceDto) {
+    await this.redisService.del(EXPERIENCE_ALL_REDIS_KEY);
+    return await this.prisma.experience.update({
+      where: { id },
+      data: {
+        company: payload.company,
+        role: payload.role,
+        country: payload.country,
+        startDate: payload.startDate,
+        endDate: payload.endDate,
+        isCurrent: payload.isCurrent,
+      },
+    });
+  }
 }
