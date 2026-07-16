@@ -4,6 +4,7 @@ import { PrismaService } from '../lib/database/prisma.service.js';
 import { RedisService } from '../lib/redis/redis.service.js';
 import {
   EXPERIENCE_ALL_REDIS_KEY,
+  EXPERIENCE_GET_BY_ID,
   REDIS_DEFAULT_TTL,
 } from '../constants/index.js';
 import { Experience } from 'generated/prisma/client.js';
@@ -53,6 +54,7 @@ export class ExperienceService {
 
   async updateExperience(id: string, payload: ExperienceDto) {
     await this.redisService.del(EXPERIENCE_ALL_REDIS_KEY);
+    await this.redisService.del(EXPERIENCE_GET_BY_ID(id));
     return await this.prisma.experience.update({
       where: { id },
       data: {
@@ -64,5 +66,17 @@ export class ExperienceService {
         isCurrent: payload.isCurrent,
       },
     });
+  }
+
+  async getExperienceById(id: string) {
+    const dataFromRedis = await this.redisService.get(EXPERIENCE_GET_BY_ID(id));
+    if (dataFromRedis) {
+      return dataFromRedis as Experience;
+    }
+    const data = await this.prisma.experience.findUnique({
+      where: { id },
+    });
+    this.redisService.set(EXPERIENCE_GET_BY_ID(id), data, REDIS_DEFAULT_TTL);
+    return data;
   }
 }

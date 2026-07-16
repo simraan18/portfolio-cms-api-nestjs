@@ -41,4 +41,12 @@ export class ExperienceController {
   ) {
     return await this.experienceService.updateExperience(id, payload);
   }
+
+  @Get('/:id')
+  @ApiOperation({ summary: 'Get experience by id' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async getExperienceById(@Param('id') id: string) {
+    return await this.experienceService.getExperienceById(id);
+  }
 }
