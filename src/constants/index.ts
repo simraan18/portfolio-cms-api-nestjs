@@ -10,4 +10,6 @@ export const CARD_GET_BY_SLUG = (slug: string) =>
 export const EXPERIENCE_GET_BY_ID = (id: string) =>
   `experience_get_by_id_${id}_cache_key`;
 
+export const GET_ALL_CARD_REDIS_KEY = 'get_all_card_cache_key';
+
 export const REDIS_DEFAULT_TTL = 60 * 60 * 24;

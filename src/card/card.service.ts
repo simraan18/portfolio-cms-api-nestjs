@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../lib/database/prisma.service.js';
 import { CardDto } from '../dto/card.dto.js';
 import { CardCategoryService } from '../card-category/card-category.service.js';
 import { RedisService } from '../lib/redis/redis.service.js';
-import { CARD_GET_BY_SLUG, REDIS_DEFAULT_TTL } from '../constants/index.js';
+import {
+  CARD_GET_BY_SLUG,
+  GET_ALL_CARD_REDIS_KEY,
+  REDIS_DEFAULT_TTL,
+} from '../constants/index.js';
 import { Card } from 'generated/prisma/client.js';
 
 @Injectable()
@@ -19,6 +23,7 @@ export class CardService {
       payload.cardCategoryId,
     );
     await this.redisService.del(CARD_GET_BY_SLUG(cardCategory.slug));
+    await this.redisService.del(GET_ALL_CARD_REDIS_KEY);
     return await this.prisma.card.create({
       data: {
         description: payload.description,
@@ -59,6 +64,7 @@ export class CardService {
       payload.cardCategoryId,
     );
     await this.redisService.del(CARD_GET_BY_SLUG(cardCategory.slug));
+    await this.redisService.del(GET_ALL_CARD_REDIS_KEY);
     return await this.prisma.card.update({
       where: { id },
       data: {
@@ -69,5 +75,34 @@ export class CardService {
       },
       include: { cardCategory: true },
     });
+  }
+
+  async getAllCard() {
+    const fromRedis = await this.redisService.get(GET_ALL_CARD_REDIS_KEY);
+    if (fromRedis) {
+      return fromRedis as Card[];
+    }
+    const data = await this.prisma.card.findMany({
+      include: {
+        cardCategory: true,
+      },
+    });
+    await this.redisService.set(
+      GET_ALL_CARD_REDIS_KEY,
+      data,
+      REDIS_DEFAULT_TTL,
+    );
+    return data;
+  }
+
+  async getCardById(id: string) {
+    const data = await this.prisma.card.findUnique({
+      where: { id },
+      include: { cardCategory: true },
+    });
+    if (!data) {
+      throw new NotFoundException('Card not found');
+    }
+    return data;
   }
 }

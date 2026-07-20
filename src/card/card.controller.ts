@@ -38,4 +38,20 @@ export class CardController {
   async updateCard(@Body() payload: CardDto, @Param('id') id: string) {
     return await this.cardService.updateCard(payload, id);
   }
+
+  @Get('/')
+  @ApiOperation({ summary: 'Get All Cards' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async getAllCard() {
+    return await this.cardService.getAllCard();
+  }
+
+  @Get('/card-id/:id')
+  @ApiOperation({ summary: 'Get Card By Id' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async getCardById(@Param('id') id: string) {
+    return await this.cardService.getCardById(id);
+  }
 }
