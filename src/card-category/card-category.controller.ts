@@ -41,4 +41,11 @@ export class CardCategoryController {
   ) {
     return await this.cardCategoryService.updateCardCategory(id, payload);
   }
+
+  @Get('/:id')
+  @ApiOperation({ summary: 'Get card category by id' })
+  @ApiBearerAuth('access-token')
+  async getCardCategoryById(@Param('id') id: string) {
+    return await this.cardCategoryService.getCardCategoryById(id);
+  }
 }

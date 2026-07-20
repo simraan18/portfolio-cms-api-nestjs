@@ -16,7 +16,7 @@ export class ArcjetHttpService {
       shield({ mode: this.arjectMode }),
       detectBot({
         mode: this.arjectMode,
-        allow: ['CATEGORY:SEARCH_ENGINE', 'CATEGORY:PREVIEW'],
+        allow: ['CATEGORY:SEARCH_ENGINE', 'CATEGORY:PREVIEW', 'POSTMAN'],
       }),
       fixedWindow({
         mode: this.arjectMode,
