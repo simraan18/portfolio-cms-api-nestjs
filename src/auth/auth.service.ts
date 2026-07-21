@@ -67,4 +67,9 @@ export class AuthService {
       email: user.email,
     };
   }
+
+  async signOut(id: string) {
+    const user = await this.userService.getUserById(id);
+    await this.userTokenService.deleteToken(user.id);
+  }
 }

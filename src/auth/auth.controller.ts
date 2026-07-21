@@ -46,4 +46,12 @@ export class AuthController {
   async getUserById(@Req() req: any) {
     return await this.authService.getUserById(req.user.userId);
   }
+
+  @Post('/sign-out')
+  @ApiOperation({ summary: 'Sign Out' })
+  @ApiBearerAuth('access-token')
+  @HttpCode(HttpStatus.OK)
+  async signOut(@Req() req: any) {
+    return await this.authService.signOut(req.user.userId);
+  }
 }

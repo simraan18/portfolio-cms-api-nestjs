@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../lib/database/prisma.service.js';
 import { SocialLinkDto } from '../dto/social-link.dto.js';
 import { RedisService } from '../lib/redis/redis.service.js';
@@ -42,5 +42,15 @@ export class SocialLinkService {
       where: { id },
       data: payload,
     });
+  }
+
+  async getSocialLinkById(id: string) {
+    const data = await this.prisma.socialLink.findUnique({
+      where: { id },
+    });
+    if (!data) {
+      throw new NotFoundException('Social link not found');
+    }
+    return data;
   }
 }

@@ -41,4 +41,12 @@ export class SocialLinkController {
   ) {
     return await this.socialLinkService.updateSocialLink(payload, id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id')
+  @ApiOperation({ summary: 'Get Social Link By Id' })
+  @ApiBearerAuth('access-token')
+  async getSocialLinkById(@Param('id') id: string) {
+    return await this.socialLinkService.getSocialLinkById(id);
+  }
 }
